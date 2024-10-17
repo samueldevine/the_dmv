@@ -3,12 +3,12 @@ require 'spec_helper'
 RSpec.describe Registrant do
   describe '#initialize' do
     it 'can initialize' do
-      @bruce = Registrant.new('Bruce', 18, true)
-      expect(@bruce).to be_an_instance_of(Registrant)
-      expect(@bruce.name).to eq('Bruce')
-      expect(@bruce.age).to eq(18)
-      expect(@bruce.permit?).to eq(true)
-      expect(@bruce.license_data).to eq({written: false, licence: false, renewed: false})
+      bruce = Registrant.new('Bruce', 18, true)
+      expect(bruce).to be_an_instance_of(Registrant)
+      expect(bruce.name).to eq('Bruce')
+      expect(bruce.age).to eq(18)
+      expect(bruce.permit?).to eq(true)
+      expect(bruce.license_data).to eq({written: false, licence: false, renewed: false})
     end
 
     it 'initializes permit attr to false by default' do
