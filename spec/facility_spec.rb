@@ -70,11 +70,11 @@ RSpec.describe Facility do
 
       @facility.register_vehicle(camaro)
       expect(@facility.collected_fees).to eq(125)
-      expect(cruz.plate_type).to eq(:antique)
+      expect(camaro.plate_type).to eq(:antique)
 
       @facility.register_vehicle(bolt)
       expect(@facility.collected_fees).to eq(325)
-      expect(cruz.plate_type).to eq(:ev)
+      expect(bolt.plate_type).to eq(:ev)
     end
   end
 end
