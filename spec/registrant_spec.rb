@@ -8,7 +8,7 @@ RSpec.describe Registrant do
       expect(bruce.name).to eq('Bruce')
       expect(bruce.age).to eq(18)
       expect(bruce.permit?).to eq(true)
-      expect(bruce.license_data).to eq({written: false, licence: false, renewed: false})
+      expect(bruce.license_data).to eq({written: false, license: false, renewed: false})
     end
 
     it 'initializes permit attr to false by default' do
