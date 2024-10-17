@@ -77,4 +77,78 @@ RSpec.describe Facility do
       expect(bolt.plate_type).to eq(:ev)
     end
   end
+
+  describe '#administer_written_test' do
+    before(:each) do
+      @bruce = Registrant.new('Bruce', 18, true)
+      @penny = Registrant.new('Penny', 16)
+      @tucker = Registrant.new('Tucker', 15)
+    end
+
+    it 'can administer a written test' do
+      expect(@facility.administer_written_test(@bruce)).to eq(false)
+      expect(@bruce.license_data[:written]).to eq(false)
+
+      @facility.add_service('Written Test')
+      expect(@facility.administer_written_test(@bruce)).to eq(true)
+      expect(@bruce.license_data[:written]).to eq(true)
+    end
+
+    it 'requires a permit and 16 years of age' do
+      @facility.add_service('Written Test')
+
+      expect(@facility.administer_written_test(@penny)).to eq(false)
+      expect(@penny.license_data[:written]).to eq(false)
+
+      @penny.earn_permit
+      @tucker.earn_permit
+
+      expect(@facility.administer_written_test(@penny)).to eq(true)
+      expect(@penny.license_data[:written]).to eq(true)
+      expect(@facility.administer_written_test(@tucker)).to eq(false)
+      expect(@tucker.license_data[:written]).to eq(false)
+    end
+  end
+
+  describe '#administer_road_test' do
+    before(:each) do
+      @bruce = Registrant.new('Bruce', 18, true)
+      @facility.add_service('Written Test')
+    end
+
+    it 'can administer a road test' do
+      @facility.administer_written_test(@bruce)
+      expect(@facility.administer_road_test(@bruce)).to eq(false)
+
+      @facility.add_service('Road Test')
+      expect(@facility.administer_road_test(@bruce)).to eq(true)
+      expect(@bruce.license_data).to eq({written: true, license: true, renewed: false})
+    end
+
+    it 'requires a written test first' do
+      @facility.add_service('Road Test')
+      expect(@facility.administer_road_test(@bruce)).to eq(false)
+
+      @facility.administer_written_test(@bruce)
+      expect(@facility.administer_road_test(@bruce)).to eq(true)
+    end
+  end
+
+  describe '#renew_drivers_license' do
+    it 'requires a current license' do
+      bruce = Registrant.new('Bruce', 18, true)
+      @facility.add_service('Written Test')
+      @facility.add_service('Road Test')
+      @facility.administer_written_test(bruce)
+      @facility.administer_road_test(bruce)
+      expect(bruce.license_data[:renewed]).to eq(false)
+
+      @facility.renew_drivers_license(bruce)
+      expect(bruce.license_data[:renewed]).to eq(false)
+
+      @facility.add_service('Renew License')
+      @facility.renew_drivers_license(bruce)
+      expect(bruce.license_data[:renewed]).to eq(true)
+    end
+  end
 end
